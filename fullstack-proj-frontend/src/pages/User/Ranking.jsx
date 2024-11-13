@@ -215,7 +215,7 @@ export default function Ranking() {
                   <a onClick={() => setActiveTab('Global')}>Global</a>
                 </li>
                 <li className={activeTab === 'Region' ? 'is-active' : ''}>
-                  <a onClick={() => handleComingSoon}>Region</a>
+                  <a onClick={() => handleComingSoon()}>Region</a>
                 </li>
               </ul>
             </div>

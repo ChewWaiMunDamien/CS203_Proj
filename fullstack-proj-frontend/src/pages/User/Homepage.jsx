@@ -179,10 +179,10 @@ export default function Homepage() {
                         </a>
                     </div> 
                 </section>
-                <div style={{paddingLeft:"5%", height:"20%", minHeight:"120px", width:"100%", textAlign:"center", marginTop:"20px"}}>
+                <div className="fade-in" style={{paddingLeft:"5%", height:"10%", minHeight:"120px", width:"100%", textAlign:"center", marginTop:"20px"}}>
                     <p className="title is-1" style={{fontWeight:"bold"}}>Chess Latest News </p>
                 </div>
-                <section className="hero animate__animated animate__fadeInUpBi" style={{width:"100%", height:"auto",  paddingTop:"5%", paddingLeft:"5%", paddingRight:"5%", paddingBottom:"50px", overflow:"scroll"}}>
+                <section className="hero animate__animated animate__fadeInUpBi" style={{width:"100%", height:"auto",  paddingTop:"50px", paddingLeft:"5%", paddingRight:"5%", paddingBottom:"50px", overflow:"scroll"}}>
                     <div style={{width:"100%", display:"flex", justifyContent:"left", gap:"5%", height:"70%"}}>
                         <a target="_blank" href="https://www.straitstimes.com/opinion/china-india-clash-looms-in-singapore-for-title-of-world-chess-champion" className="card custom-card" style={{ width: "50%", minWidth: "400px", height:"auto", minHeight:"400px" }}>
                         <div className="card-image">
