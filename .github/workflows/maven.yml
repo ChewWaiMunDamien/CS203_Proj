@@ -62,7 +62,7 @@ jobs:
     # Push Docker image to Docker Hub (or other registry)
     - name: Push Docker image to Docker Hub
       run: |
-        # docker push ${{ secrets.DOCKER_USERNAME }}/backend-image:latest
+        # docker push ${{ secrets.DOCKER_USERNAME }}/fullstack-backend-proj1:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
         EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}  # Add your EC2 private key in secrets
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # EC2 public IP or DNS
         EC2_USER: 'ubuntu'  # or ec2-user, depending on AMI
-        DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/backend-image:latest  # Image in Docker Hub
+        DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/fullstack-backend-proj1:latest  # Image in Docker Hub
       run: |
         # Create a temporary file for the SSH private key
         echo "$EC2_SSH_PRIVATE_KEY" > private_key.pem
@@ -92,7 +92,7 @@ jobs:
           # Log in to Docker Hub
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-          # Pull or Build Docker images (if not built on EC2 already)
+          # Pull Docker image
           # docker pull $BACKEND_DOCKER_IMAGE
 
           # Stop any existing containers
