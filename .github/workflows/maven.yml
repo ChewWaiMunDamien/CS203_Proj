@@ -48,10 +48,10 @@ jobs:
         docker build -t backend-image .
 
     # Build Docker image for frontend
-    - name: Build Docker image for frontend
-      run: |
-        cd fullstack-proj-frontend
-        docker build -t frontend-image .
+    #- name: Build Docker image for frontend
+    #  run: |
+    #    cd fullstack-proj-frontend
+    #    docker build -t frontend-image .
 
   deploy:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # EC2 public IP or DNS
         EC2_USER: 'ubuntu'  # or ec2-user, depending on AMI
         BACKEND_DOCKER_IMAGE: 'backend-image'  # Use your Docker image name/tag
-        FRONTEND_DOCKER_IMAGE: 'frontend-image'  # Use your Docker image name/tag
+        #FRONTEND_DOCKER_IMAGE: 'frontend-image'  # Use your Docker image name/tag
       run: |
         # Create a temporary file for the SSH private key
         echo "$EC2_SSH_PRIVATE_KEY" > private_key.pem
