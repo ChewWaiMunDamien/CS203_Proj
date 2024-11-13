@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies and build frontend
       run: |
         cd fullstack-proj-frontend
-        npm install fullstack-proj-frontend
+        npm ci
         npm run build
 
     # Set up JDK 17 for the backend
@@ -39,20 +39,29 @@ jobs:
     - name: Build backend with Maven
       run: |
         cd fullstack-backend-proj2
-        #mvn -B package --file pom.xml
-        mvn install -DskipTests #Skip tests for now
+        mvn -B package --file pom.xml
+        # mvn install -DskipTests #Skip tests for now
 
-    # Build Docker image for backend
-    - name: Build Docker image for backend
+    # Set up Docker
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    # Build Docker image
+    - name: Build Docker image
       run: |
-        cd fullstack-backend-proj2
-        docker build -t backend-image .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-image:latest .
 
-    # Build Docker image for frontend
-    #- name: Build Docker image for frontend
-    #  run: |
-    #    cd fullstack-proj-frontend
-    #    docker build -t frontend-image .
+    # Log in to Docker Hub (or other registry)
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username
+        password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password or token
+
+    # Push Docker image to Docker Hub (or other registry)
+    - name: Push Docker image to Docker Hub
+      run: |
+        # docker push ${{ secrets.DOCKER_USERNAME }}/backend-image:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -69,8 +78,7 @@ jobs:
         EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}  # Add your EC2 private key in secrets
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # EC2 public IP or DNS
         EC2_USER: 'ubuntu'  # or ec2-user, depending on AMI
-        BACKEND_DOCKER_IMAGE: 'backend-image'  # Use your Docker image name/tag
-        #FRONTEND_DOCKER_IMAGE: 'frontend-image'  # Use your Docker image name/tag
+        DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/backend-image:latest  # Image in Docker Hub
       run: |
         # Create a temporary file for the SSH private key
         echo "$EC2_SSH_PRIVATE_KEY" > private_key.pem
@@ -80,20 +88,18 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem $EC2_USER@$EC2_PUBLIC_IP << EOF
           sudo apt-get update -y
 
+          # Log in to Docker Hub
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
           # Pull or Build Docker images (if not built on EC2 already)
-          docker pull $BACKEND_DOCKER_IMAGE
-          docker pull $FRONTEND_DOCKER_IMAGE
+          # docker pull $BACKEND_DOCKER_IMAGE
 
-          # Stop any existing containers (optional)
-          docker ps -q --filter "name=backend" | xargs -I {} docker stop {}
-          docker ps -q --filter "name=frontend" | xargs -I {} docker stop {}
-
-          # Remove stopped containers (optional)
-          docker ps -aq --filter "name=backend" | xargs -I {} docker rm {}
-          docker ps -aq --filter "name=frontend" | xargs -I {} docker rm {}
+          # Stop any existing containers
+          # docker ps -q --filter "name=backend" | xargs -I {} docker stop {}
+          # docker ps -q --filter "name=frontend" | xargs -I {} docker stop {}
 
           # Run the backend container (adjust ports as necessary)
-          docker run -d --name backend -p 8080:8080 $BACKEND_DOCKER_IMAGE
+          # docker run -d --name backend -p 8080:8080 $BACKEND_DOCKER_IMAGE
           
         EOF
 
@@ -106,5 +112,5 @@ jobs:
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        command: pages deploy fullstack-proj-frontend/build --project-name=chess-comps.com
+        command: # pages deploy fullstack-proj-frontend/dist --project-name=chess-comps.com
 
