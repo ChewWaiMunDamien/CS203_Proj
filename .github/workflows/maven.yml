@@ -39,8 +39,8 @@ jobs:
     - name: Build backend with Maven
       run: |
         cd fullstack-backend-proj2
-        mvn -B package --file pom.xml
-        # mvn install -DskipTests #Skip tests for now
+        #mvn -B package --file pom.xml
+        mvn install -DskipTests #Skip tests for now
 
     # Set up Docker
     - name: Set up Docker
