@@ -49,6 +49,7 @@ jobs:
     # Build Docker image
     - name: Build Docker image
       run: |
+        cd fullstack-backend-proj2
         docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-image:latest .
 
     # Log in to Docker Hub (or other registry)
